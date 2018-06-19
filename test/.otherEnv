@@ -1,0 +1,3 @@
+TOPIC_ARN=given:arn:from:env
+CODEC=mp3
+EXTENSION=.mp3
