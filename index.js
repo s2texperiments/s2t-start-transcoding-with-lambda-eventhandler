@@ -9,6 +9,11 @@ exports.handler = async (event) => {
     const CODEC = process.env['CODEC'];
     const EXTENSION = process.env['EXTENSION'] || ".ogg";
     const TOPIC_ARN = process.env['TOPIC_ARN'];
+    console.log(`ENV SETTINGS: Codec: ${CODEC} EXTENSION: ${EXTENSION} TOPIC_ARN: ${TOPIC_ARN}`);
+
+    if (!CODEC || !TOPIC_ARN) {
+        throw "Missing mandatory env var";
+    }
 
     let {
         Records: [{
@@ -20,13 +25,13 @@ exports.handler = async (event) => {
                     key: {
                         Value: key
                     },
-                    "transcribe-provider":{
+                    "transcribe-provider": {
                         Value: provider
                     },
-                    "api-key-id":{
+                    "api-key-id": {
                         Value: apiKeyId
                     },
-                    "pid":{
+                    "pid": {
                         Value: pid
                     }
                 }
@@ -34,21 +39,23 @@ exports.handler = async (event) => {
         }]
     } = event;
 
-
+    if (!bucket || !key || !provider || !apiKeyId || !pid) {
+        throw "Missing sns message attributes (field)";
+    }
 
 
     return snsApi.publish({
         Message: JSON.stringify({
-            in:{
-                bucket:bucket,
-                key:key
+            in: {
+                bucket: bucket,
+                key: key
             },
-            out:{
-                bucket:bucket,
-                key:`${provider}/transcoded/${apiKeyId}/${pid}${EXTENSION}`,
-                codec:CODEC
+            out: {
+                bucket: bucket,
+                key: `${provider}/transcoded/${apiKeyId}/${pid}${EXTENSION}`,
+                codec: CODEC
             }
         }),
-        TopicArn: process.env['TOPIC_ARN']
+        TopicArn: TOPIC_ARN
     });
 };

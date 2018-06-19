@@ -7,15 +7,16 @@ const fs = require('fs');
 const dotEnv = require('dotenv');
 describe('eventhandler', () => {
 
-    let validSNSEvent;
-    let expectedValidSNSResponse;
-    let expectedValidSNSResponseOtherEnv;
+    let validSNSEvent, missingMessageAttributesSNSEvent;
+    let expectedValidSNSResponse, expectedValidSNSResponseOtherEnv;
     let snsPublishFake;
     let underTest;
 
     beforeEach(() => {
 
         validSNSEvent = JSON.parse(fs.readFileSync('test/validSNSEvent.json', 'utf8'));
+        missingMessageAttributesSNSEvent = JSON.parse(fs.readFileSync('test/missingMessageAttributesSNSEvent.json', 'utf8'));
+
         expectedValidSNSResponse = JSON.parse(fs.readFileSync('test/expectedValidSNSMessageBodyReponse.json', 'utf8'));
         expectedValidSNSResponseOtherEnv = JSON.parse(fs.readFileSync('test/expectedValidSNSMessageBodyReponseOtherEnv.json', 'utf8'));
 
@@ -32,38 +33,39 @@ describe('eventhandler', () => {
         process.env = {};
     });
 
-    it('valid sns event should redirect to start-transcoding-with-lambda', async () => {
+    it('valid sns event should redirect to start-transcoding-with-lambda topic', async () => {
         dotEnv.config({path: "test/.env"});
 
         await underTest.handler(validSNSEvent);
 
         let [snsPublishParam] = snsPublishFake.firstCall.args;
-        expect(snsPublishParam).to.have.all.keys('Message','TopicArn');
+        expect(snsPublishParam).to.have.all.keys('Message', 'TopicArn');
 
         expect(JSON.parse(snsPublishParam.Message)).to.deep.equal(expectedValidSNSResponse);
         expect(snsPublishParam.TopicArn).to.equal('given:arn:from:env')
     });
 
-    it('alternative codec and extension', async () => {
+    it('should use environment settings', async () => {
 
         dotEnv.config({path: "test/.otherEnv"});
 
         await underTest.handler(validSNSEvent);
 
         let [snsPublishParam] = snsPublishFake.firstCall.args;
-        expect(snsPublishParam).to.have.all.keys('Message','TopicArn');
+        expect(snsPublishParam).to.have.all.keys('Message', 'TopicArn');
 
         expect(JSON.parse(snsPublishParam.Message)).to.deep.equal(expectedValidSNSResponseOtherEnv);
         expect(snsPublishParam.TopicArn).to.equal('given:arn:from:env')
     });
 
 
-    it('invalid sns event should throw an exception', () => {
-
+    it('sns event without mandatory message attributes should throw an exception', () => {
+        dotEnv.config({path: "test/.env"});
+        return expect(underTest.handler(missingMessageAttributesSNSEvent)).be.rejected;
     });
 
 
-    it('invalid .env should throw an exception', () => {
-
+    it('missing mandatory env var should throw an exception', async () => {
+        return expect(underTest.handler(validSNSEvent)).be.rejected;
     });
 });
