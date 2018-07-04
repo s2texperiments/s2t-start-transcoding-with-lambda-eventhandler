@@ -5,7 +5,7 @@
   },
   "out": {
     "bucket": "s2t-base-s2tbucket-lm0q85yjlres",
-    "key": "gcp/transcoded/some_api_key_id/pid.ogg",
+    "key": "gcp/transcoded-audio/some_api_key_id/pid.ogg",
     "codec": "opus"
   }
 }

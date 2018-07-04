@@ -9,6 +9,7 @@ exports.handler = async (event) => {
     const CODEC = process.env['CODEC'];
     const EXTENSION = process.env['EXTENSION'] || ".ogg";
     const TOPIC_ARN = process.env['TOPIC_ARN'];
+    const DEST = process.env['DEST'] || "transcoded-audio";
     console.log(`ENV SETTINGS: Codec: ${CODEC} EXTENSION: ${EXTENSION} TOPIC_ARN: ${TOPIC_ARN}`);
 
     if (!CODEC || !TOPIC_ARN) {
@@ -52,7 +53,7 @@ exports.handler = async (event) => {
             },
             out: {
                 bucket: bucket,
-                key: `${provider}/transcoded/${apiKeyId}/${pid}${EXTENSION}`,
+                key: `${provider}/${DEST}/${apiKeyId}/${pid}${EXTENSION}`,
                 codec: CODEC
             }
         }),
