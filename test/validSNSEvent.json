@@ -14,7 +14,7 @@
         "MessageAttributes": {
           "key": {
             "Type": "String",
-            "Value": "gcp/not-transcoded/some_api_key_id/pid.ogg"
+            "Value": "raw-audio/some_api_key_id/pid.ogg"
           },
           "pid": {
             "Type": "String",

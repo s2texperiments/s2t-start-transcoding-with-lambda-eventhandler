@@ -53,7 +53,7 @@ exports.handler = async (event) => {
             },
             out: {
                 bucket: bucket,
-                key: `${provider}/${DEST}/${apiKeyId}/${pid}${EXTENSION}`,
+                key: `${DEST}/${apiKeyId}/${pid}${EXTENSION}`,
                 codec: CODEC
             }
         }),
