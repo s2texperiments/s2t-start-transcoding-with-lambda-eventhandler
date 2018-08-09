@@ -1,3 +1,6 @@
 TOPIC_ARN=given:arn:from:env
 CODEC=mp3
 EXTENSION=.mp3
+TRIM_ENABLED=true
+TRIM_FROM=10
+TRIM_TO=120

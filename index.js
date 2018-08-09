@@ -10,6 +10,11 @@ exports.handler = async (event) => {
     const EXTENSION = process.env['EXTENSION'] || ".ogg";
     const TOPIC_ARN = process.env['TOPIC_ARN'];
     const DEST = process.env['DEST'] || "transcoded-audio";
+
+    const TRIM_ENABLED = process.env['TRIM_ENABLED'] || false;
+    const TRIM_FROM = process.env['TRIM_FROM'] || 0;
+    const TRIM_TO = process.env['TRIM_TO'] || 180;
+
     console.log(`ENV SETTINGS: Codec: ${CODEC} EXTENSION: ${EXTENSION} TOPIC_ARN: ${TOPIC_ARN}`);
 
     if (!CODEC || !TOPIC_ARN) {
@@ -54,7 +59,10 @@ exports.handler = async (event) => {
             out: {
                 bucket: bucket,
                 key: `${DEST}/${apiKeyId}/${pid}${EXTENSION}`,
-                codec: CODEC
+                codec: CODEC,
+                trimEnabled: JSON.parse(TRIM_ENABLED),
+                trimFrom: parseInt(TRIM_FROM,10),
+                trimTo: parseInt(TRIM_TO,10)
             }
         }),
         TopicArn: TOPIC_ARN

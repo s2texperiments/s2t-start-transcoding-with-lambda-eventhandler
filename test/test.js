@@ -45,6 +45,7 @@ describe('eventhandler', () => {
         expect(snsPublishParam.TopicArn).to.equal('given:arn:from:env')
     });
 
+
     it('should use environment settings', async () => {
 
         dotEnv.config({path: "test/.otherEnv"});

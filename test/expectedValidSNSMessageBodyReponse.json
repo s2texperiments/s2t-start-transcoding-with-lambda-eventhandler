@@ -6,6 +6,9 @@
   "out": {
     "bucket": "s2t-base-s2tbucket-lm0q85yjlres",
     "key": "transcoded-audio/some_api_key_id/pid.ogg",
-    "codec": "opus"
+    "codec": "opus",
+    "trimEnabled": false,
+    "trimFrom": 0,
+    "trimTo": 180
   }
 }
